@@ -11,12 +11,19 @@ var Assignment = require('../models/assignment')
 exports.index = function (req, res, next) {
     res.render('index', { title: 'Admin Page' });
 }
-
 exports.assignTeacher = (req, res, next) => {
-
-
+    Course.findOneAndUpdate({ _id: req.params.cid }, {
+                "teacher": req.params.tid
+    }, { new: true, upsert: false },
+        (error, results) => {
+            if (error) {
+                return next(error);
+            }
+            // Respond with valid data
+            res.json(results);
+        }
+    )
 }
-
 exports.modifyStudent = (req, res, next) => {
     Student.findOneAndUpdate(req.body)
         .then((student) => {
@@ -57,7 +64,6 @@ exports.deleteStudent = (req, res, next) => {
         res.json(results);
     });
 }
-
 exports.deleteTeacher = (req, res, next) => {
     Teacher.deleteOne({ _id: req.params.tid }, function (error, results) {
         if (error) {
