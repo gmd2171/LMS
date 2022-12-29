@@ -5,12 +5,12 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var mongoose = require('mongoose');
 
-const connection = mongoose.connect('mongodb://localhost:27017/lms', { useNewUrlParser: true, useUnifiedTopology: true });
-mongoose.set('strictQuery', true);
-var app = express();
-connection.then((db) => {
-    console.log("Connected correctly to server");
-}, (err) => { console.log(err); });
+// const connection = mongoose.connect('mongodb://localhost:27017/lms', { useNewUrlParser: true, useUnifiedTopology: true });
+// mongoose.set('strictQuery', true);
+// var app = express();
+// connection.then((db) => {
+//     console.log("Connected correctly to server");
+// }, (err) => { console.log(err); });
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -48,9 +48,9 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-const port = '3000'
-app.listen(port, () => {
-  console.log(`Server listening on port ${port}`)
-})
+// const port = '3000'
+// app.listen(port, () => {
+//   console.log(`Server listening on port ${port}`)
+// })
 
 module.exports = app;
