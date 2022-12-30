@@ -288,7 +288,7 @@ router.put('/assigment/:id',function(req,res,next){
 });
 
 
-//@Author: Hassan Raza [SP20-BCS-]
+//@Author: Hassan Raza [SP20-BCS-035]
 router.put('/materials/:mid', function (req, res, next) {
     Course.findOneAndUpdate({
         _id: req.params.mid
