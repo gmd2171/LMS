@@ -288,4 +288,28 @@ router.put('/assigment/:id',function(req,res,next){
 });
 
 
+//@Author: Hassan Raza [SP20-BCS-]
+router.put('/materials/:mid', function (req, res, next) {
+    Course.findOneAndUpdate({
+        _id: req.params.mid
+    },
+        {
+            $set:
+            {
+                title: req.body.title,
+                file: req.body.file,
+                fileName: req.body.fileName,
+                fileExtension: req.body.fileExtension,
+                uploadDate: new Date()
+            }
+        },
+        function (error, results) {
+            if (error) {
+                return next(error);
+            }
+            res.json(results);
+        });
+});
+
+
 module.exports = router;
