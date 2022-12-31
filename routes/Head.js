@@ -5,6 +5,8 @@ var Class = require('../models/class');
 var Course = require('../models/course');
 var Student = require('../models/student');
 var Result = require('../models/result');
+var Assignment = require('../models/assignment');
+var Quiz = require('../models/quiz');
 
 //@Author: Beenish Shakeel [SP20-BCS-017]
 /* 
@@ -372,7 +374,7 @@ router.get('/students', function(req, res, next) {
 
 // @Author: Kumail Raza [SP20-BCS-045]
 router.put('/quiz/:qid', function(req, res, next) {
-    quiz.findOneAndUpdate({ _id: req.params.qid },{$set:{quizNumber: req.body.quizNumber, 
+    Quiz.findOneAndUpdate({ _id: req.params.qid },{$set:{quizNumber: req.body.quizNumber, 
         title: req.body.title, uploadDate: req.body.uploadDate, totalMarks: req.body.totalMarks}}, function(error, results) {
         if (error) {
             return next(error);
@@ -384,7 +386,7 @@ router.put('/quiz/:qid', function(req, res, next) {
 
 // @Author: Hassan Shahzad [SP20-BCS-036]
 router.put('/assigment/:id',function(req,res,next){
-    assignment.findOneAndUpdate({_id:req.params.qid},{$set:{assignmentNumber:req.body.assignmentNumber,
+    Assignment.findOneAndUpdate({_id:req.params.qid},{$set:{assignmentNumber:req.body.assignmentNumber,
         title: req.body.title, uploadDate: req.body.uploadDate, totalMarks: req.body.totalMarks, deadline: req.body.deadline, file: req.body.file, filename: req.body.filename, fileExtension:req.body.fileExtension }},
          function(error, results) {
             if (error) {
