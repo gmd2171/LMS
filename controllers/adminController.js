@@ -8,8 +8,26 @@ var User = require('../models/user')
 var Assignment = require('../models/assignment')
 
 
-exports.index = function (req, res, next) {
+exports.index = (req, res, next) => {
     res.render('index', { title: 'Admin Page' });
+}
+exports.viewStudents = (req, res, next) => {
+    Student.find().sort('student_regNo')
+        .exec((error, results) => {
+            if (error) {
+                return next(error);
+            }
+            res.json(results);
+    });
+}
+exports.viewClasses = (req, res, next) => {
+    Class.find({}).populate('studentsList.studentID')
+        .exec((error, results) => {
+            if(error) {
+                return next(error);
+            }
+            res.json(results);
+        })
 }
 exports.assignTeacher = (req, res, next) => {
     Course.findOneAndUpdate({ _id: req.params.cid }, {
@@ -20,6 +38,22 @@ exports.assignTeacher = (req, res, next) => {
                 return next(error);
             }
             // Respond with valid data
+            res.json(results);
+        }
+    )
+}
+exports.assignStudent = (req, res, next) => {
+    Class.findOneAndUpdate({ _id: req.params.cid }, {
+        "$push": {
+            "studentsList": {
+                "studentID": req.params.sid
+            }
+        }
+    }, { new: true, upsert: false },
+        (error, results) => {
+            if(error) {
+                return next(error);
+            }
             res.json(results);
         }
     )
@@ -44,6 +78,16 @@ exports.modifyTeacher = (req, res, next) => {
         }, (err) => next(err))
         .catch((err) => next(err));
 }
+exports.modifyClass = (req, res, next) => {
+    Class.findOneAndUpdate(req.body)
+        .then((_class) => {
+            console.log('Class has been updated ', _class);
+            res.statusCode = 200;
+            res.setHeader('Content-Type', 'application/json');
+            res.json(_class);
+        }, (err) => next(err))
+        .catch((err) => next(err));
+}
 exports.addStudent = (req, res, next) => {
     Student.create(req.body)
         .then((student) => {
@@ -54,6 +98,16 @@ exports.addStudent = (req, res, next) => {
         }, (err) => next(err))
         .catch((err) => next(err))
 
+}
+exports.addTeacher = (req, res, next) => {
+    Teacher.create(req.body)
+        .then((teacher) => {
+            console.log('Teacher has been Added ', teacher);
+            res.statusCode = 200;
+            res.setHeader('Content-Type', 'application/json');
+            res.json(teacher);
+        }, (err) => next(err))
+        .catch((err) => next(err));
 }
 exports.deleteStudent = (req, res, next) => {
     Student.deleteOne({ _id: req.params.sid }, function (error, results) {
@@ -72,4 +126,11 @@ exports.deleteTeacher = (req, res, next) => {
         res.json(results);
     });
 }
-
+exports.deleteClass = (req, res, next) => {
+    Class.deleteOne({_id: req.params.cid}, function(error, results) {
+        if(error) {
+            return next(error);
+        }
+        res.json(results);
+    })
+}
