@@ -198,7 +198,7 @@ router.get('/materials', (req, res, next) => {
 });
 
 
-// @Author: Maria Javed [SP20-BCS-???]
+// @Author: Maria Javed [SP20-BCS-049]
 /* 
     Method: GET	
     Route: /results/class/:id
@@ -370,7 +370,7 @@ router.get('/students', function(req, res, next) {
 });
 
 
-// @Author: Kumail Raza
+// @Author: Kumail Raza [SP20-BCS-045]
 router.put('/quiz/:qid', function(req, res, next) {
     quiz.findOneAndUpdate({ _id: req.params.qid },{$set:{quizNumber: req.body.quizNumber, 
         title: req.body.title, uploadDate: req.body.uploadDate, totalMarks: req.body.totalMarks}}, function(error, results) {
@@ -382,7 +382,7 @@ router.put('/quiz/:qid', function(req, res, next) {
     });
 });
 
-// @Author: Hassan Shahzad
+// @Author: Hassan Shahzad [SP20-BCS-036]
 router.put('/assigment/:id',function(req,res,next){
     assignment.findOneAndUpdate({_id:req.params.qid},{$set:{assignmentNumber:req.body.assignmentNumber,
         title: req.body.title, uploadDate: req.body.uploadDate, totalMarks: req.body.totalMarks, deadline: req.body.deadline, file: req.body.file, filename: req.body.filename, fileExtension:req.body.fileExtension }},
