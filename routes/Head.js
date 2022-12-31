@@ -6,6 +6,114 @@ var Course = require('../models/course');
 var Student = require('../models/student');
 var Result = require('../models/result');
 
+//@Author: Beenish Shakeel [SP20-BCS-017]
+/* 
+    Method: GET	
+    Route: /
+    Description: View Dashboard
+    Returns: an object with data from 3 collections
+*/
+router.get("/", async function (req, res) {
+    try {
+        let teachers = await Teacher.find({}, { __v: 0 }).populate(
+            "userid",
+            "name"
+        );
+        teachers = teachers.map(teacher => teacher.toObject());
+        let courses = await Course.find({}, { __v: 0, materialList: 0, _id: 0 }).populate({
+            path: "teacher",
+            select: "userid",
+            populate: {
+                path: "userid",
+                select: "name",
+            },
+        });
+        courses = courses.map((course) => {
+            let no_of_students = course.studentsList.length;
+            let no_of_quizzes = course.quizList.length;
+            let no_of_assignments = course.assignmentList.length;
+
+            course.studentsList = undefined;
+            course.quizList = undefined;
+            course.assignmentList = undefined;
+
+            return {
+                ...course.toObject(),
+                no_of_students: no_of_students,
+                no_of_quizzes: no_of_quizzes,
+                no_of_assignments: no_of_assignments
+            };
+        });
+        let classes = await Class.find({}, { __v: 0, _id: 0 });
+        classes = classes.map((class_record) => {
+            let no_of_students = class_record.studentsList.length;
+            class_record.studentsList = undefined;
+            return {
+            ...class_record.toObject(),
+            no_of_students: no_of_students
+            };
+        });
+
+        res.json({ teachers: teachers, courses: courses, classes: classes });
+
+    } catch (e) {
+
+        console.log(e);
+        res.status(500).send("Could not get dashboard data");
+    }
+});
+  
+//@Author: Beenish Shakeel [SP20-BCS-017]
+/* 
+    Method: GET	
+    Route: /graph
+    Description: View graph
+    Returns: number of passed students
+*/
+router.get("/graph", function (req, res) {
+    Result.aggregate([
+    {
+        $group: {
+            _id: {
+                class: "$class_id",
+                course: "$course_id"
+            },
+            totalStudents: {$sum: 1},
+            gpas: {
+                $push: "$obtained_gpa"
+            }
+        }
+    },
+    {
+        $group: {
+            _id: "$_id.class",
+            courses: {$push: {course: "$_id.course", totalStudents: "$totalStudents", gpas: "$gpas"}}
+        }
+    }
+    ])
+    .then(classesResults => {
+        classesResults = classesResults.map(classResult => {
+            let coursesResults = classResult.courses.map(course => {
+                let gpas = [...course.gpas]
+                delete course.gpas;
+                return {
+                    ...course,
+                    studentsPassed: gpas.filter(gpa => gpa >= 2).length
+                };
+            });
+            return {
+                ...classResult,
+                courses: coursesResults
+            };
+        });
+        res.json(classesResults);
+    })
+    .catch(error => {
+        console.log(error);
+        res.status(500).send("could not load graph data")
+    });
+});
+
 
 // @Author: Farasat Khan [SP20-BCS-025]
 /* 
