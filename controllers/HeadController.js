@@ -120,6 +120,69 @@ exports.viewGraph =  (req, res, next) => {
 };
 
 // @Author: Farasat Khan [SP20-BCS-025]
+/* 
+    Method: POST	
+    Route: /results/submit	
+    Description: Submit Student's Marks
+    Returns: Status 201
+*/
+exports.submitResult =  (req, res, next) => {
+    const {student_id, course_id, class_id, total_marks, obtained_marks, obtained_gpa} = req.body;
+
+    Student.find({_id: student_id}).exec((error, data) => {
+        if (error) throw error;
+
+        Course.find({_id: course_id}).exec((error, data) => {
+            if (error) throw error;
+
+            Result.create(
+                {
+                    student_id: student_id, course_id: course_id, class_id: class_id, total_marks: total_marks,
+                    obtained_marks: obtained_marks, obtained_gpa: obtained_gpa
+                },
+                (error, data) => {
+                    if (error) throw error;
+
+                    res.status(201).send({"status": "Result Submitted"});
+                }
+            );
+        });
+    });
+};
+
+// @Author: Farasat Khan [SP20-BCS-025]
+/* 
+    Method: GET	
+    Route: /results/
+    Description: View All Results
+    Returns: Result Collections
+*/
+exports.viewResult =  (req, res, next) => {
+    Result.find({}).exec((error, data) => {
+        if (error) throw error;
+
+        res.send(data);
+    });
+};
+
+// @Author: Farasat Khan [SP20-BCS-025]
+/* 
+    Method: GET	
+    Route: /results/student/:id
+    Description: View Results of student
+    Returns: Result Collections
+*/
+exports.viewParticularStudentResultAlt =  (req, res, next) => {
+    const student_id = req.params.id;
+
+    Result.find({student_id: student_id}).exec((error, data) => {
+        if (error) throw error;
+
+        res.status(200).send(data);
+    });
+};
+
+// @Author: Farasat Khan [SP20-BCS-025]
 /*
     Method: GET	
     Route: /results/student/:id
