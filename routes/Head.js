@@ -11,10 +11,6 @@ router.get("/graph", HeadController.viewGraph);
 router.get('/materials', HeadController.viewMaterials);
 router.get('/results/student/:id', HeadController.viewParticularStudentResult);
 
-router.get('/results', HeadController.viewResult);
-router.post('/results/submit', HeadController.submitResult);
-router.get('/alternative/results/student/:id', HeadController.viewParticularStudentResultAlt);
-
 // @Author: Maria Javed [SP20-BCS-049]
 router.get('/results/class/:id', HeadController.viewParticularClassResult);
 
